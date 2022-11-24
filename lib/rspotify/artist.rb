@@ -106,15 +106,15 @@ module RSpotify
     #           top_tracks.size        #=> 10
     #           top_tracks.first.class #=> RSpotify::Track
     def top_tracks(country)
-      response = RSpotify.get("artists/#{@id}/streaming/spotify/listeners")
+      return @top_tracks[country] unless @top_tracks[country].nil? || RSpotify.raw_response
+      response = RSpotify.get("artists/#{@id}/top-tracks?country=#{country}")
 
       return response if RSpotify.raw_response
       @top_tracks[country] = response['tracks'].map { |t| Track.new t }
     end
 
     def listeners
-      return @top_tracks[country] unless @top_tracks[country].nil? || RSpotify.raw_response
-      response = RSpotify.get("artists/#{@id}/top-tracks?country=#{country}")
+      response = RSpotify.get("artists/#{@id}/streaming/spotify/listeners")
 
       return response if RSpotify.raw_response
       response['items']
